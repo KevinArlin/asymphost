@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style>
-      html,
-      body {
-        text-align: center;
-        background-color: rgb(66, 49, 82);
-      }
-    </style>
-
     <title>Asymphost</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="client.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="index.css" />
   </head>
 
   <header><h2>Asymphost</h2></header>
-  <body></body>
+  <body>
+    <p>Paste valid Asymptote code below and hit submit.</p>
+    <textarea id="asy_in"></textarea>
+    <button id="asy_submit" onclick="submitAsy()">Submit</button>
+    <span id="asy_out"></span>
+  </body>
 </html>
