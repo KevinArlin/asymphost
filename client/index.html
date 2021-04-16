@@ -10,6 +10,10 @@
   <body>
     <p>Paste valid Asymptote code below and hit submit.</p>
     <textarea id="asy_in"></textarea>
+    <div>
+      <input type="checkbox" id="asy_delete" checked />
+      <label for="asy_delete">Delete in 1 Hour</label>
+    </div>
     <button id="asy_submit" onclick="submitAsy()">Submit</button>
     <span id="asy_out"></span>
   </body>

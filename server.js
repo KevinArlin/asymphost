@@ -25,13 +25,20 @@ app.post("/host-asy", (req, res) => {
       exec(
         "asy -f html -o client/asy/ " + filename,
         (error, stdout, stderr) => {
+          fs.unlinkSync("./" + filename);
           if (error) {
             console.log(error);
             res.json({ success: false, error: error.message, path: null });
           } else {
+            let extension = stderr.includes("htmltosvg") ? ".svg" : ".html";
+            if (req.body.asy_del) {
+              setTimeout(() => {
+                fs.unlinkSync("./client/asy/" + id + extension);
+              }, 3600000);
+            }
             res.json({
               success: true,
-              path: "https://asymphost.xyz/asy/" + id + ".html",
+              path: "https://asymphost.xyz/asy/" + id + extension,
               error: null,
             });
           }

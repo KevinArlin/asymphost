@@ -1,10 +1,10 @@
-async function asyToServer(asy) {
+async function asyToServer(asy, asy_del) {
   let response = await fetch("/host-asy", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ asy }),
+    body: JSON.stringify({ asy, asy_del }),
   });
 
   if (response.ok) {
@@ -17,8 +17,9 @@ async function asyToServer(asy) {
 
 async function submitAsy() {
   let asy_in = document.getElementById("asy_in");
+  let asy_delete = document.getElementById("asy_delete");
   let asy_out = document.getElementById("asy_out");
-  let response = await asyToServer(asy_in.value);
+  let response = await asyToServer(asy_in.value, asy_delete.checked);
   if (response.error) {
     asy_out.style.display = "block";
     asy_out.style.color = "red";
