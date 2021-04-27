@@ -40,3 +40,8 @@ textarea {
   margin-left: auto;
   margin-top: 1em;
 }
+
+#options {
+  padding: 5px;
+  line-height: 1.5;
+}

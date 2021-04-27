@@ -23,7 +23,7 @@ app.post("/host-asy", (req, res) => {
       res.json({ success: false });
     } else {
       exec(
-        "asy -f html -o client/asy/ " + filename,
+        "asy -f html -offline -o client/asy/ " + filename,
         (error, stdout, stderr) => {
           fs.unlinkSync("./" + filename);
           if (error) {
@@ -36,10 +36,42 @@ app.post("/host-asy", (req, res) => {
                 fs.unlinkSync("./client/asy/" + id + extension);
               }, 3600000);
             }
+            let error_out = null;
+            if (req.body.asy_em && extension !== ".svg") {
+              fs.readFile(
+                "./client/asy/" + id + extension,
+                "utf8",
+                (err, data) => {
+                  if (err) {
+                    console.log(err);
+                    error_out = err.message;
+                    return;
+                  }
+                  var result = data.replace(
+                    /embedded=window.top.document!=document/g,
+                    "embedded=true"
+                  );
+
+                  result = result.replace(/window.top.document/g, "document");
+
+                  fs.writeFile(
+                    "./client/asy/" + id + extension,
+                    result,
+                    "utf8",
+                    (err) => {
+                      if (err) {
+                        console.log(err);
+                        error_out = err.message;
+                      }
+                    }
+                  );
+                }
+              );
+            }
             res.json({
               success: true,
               path: "https://asymphost.xyz/asy/" + id + extension,
-              error: null,
+              error: error_out,
             });
           }
         }
