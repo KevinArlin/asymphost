@@ -23,7 +23,7 @@ app.post("/host-asy", (req, res) => {
       res.json({ success: false });
     } else {
       exec(
-        "asy -f html -offline -o client/asy/ " + filename,
+        "asy -f html -safe -offline -o client/asy/ " + filename,
         (error, stdout, stderr) => {
           fs.unlinkSync("./" + filename);
           if (error) {
