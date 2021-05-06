@@ -69,7 +69,7 @@ app.post("/host-asy", (req, res) => {
               );
             }
             res.json({
-              success: true,
+              success: error_out === null,
               path: "https://asymphost.xyz/asy/" + id + extension,
               error: error_out,
             });

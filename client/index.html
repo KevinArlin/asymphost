@@ -12,7 +12,39 @@
       Paste valid Asymptote code below (for compilation to HTML & SVG only) and
       hit submit.
     </p>
-    <textarea id="asy_in"></textarea>
+    <div
+      id="dropzone"
+      ondrop="dropHandler(event)"
+      ondragover="dragoverHandler(event)"
+    >
+      <form>
+        <textarea
+          id="asy_in"
+          cols="30"
+          rows="15"
+          oninput="updateClass()"
+        ></textarea>
+        <div id="asy_in_background">
+          <div id="background_text">
+            <h3>
+              Drag and drop files to import, or
+              <label id="upload_label" for="upload">browse</label>
+            </h3>
+            <p>Alternatively you can paste or type into this field</p>
+          </div>
+          <div id="upload_button">
+            <input
+              id="upload"
+              type="file"
+              accept=".asy"
+              onchange="browseHandler()"
+              multiple
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+
     <div id="options">
       <input type="checkbox" id="asy_delete" checked />
       <label for="asy_delete">Delete after 1 Hour</label>
@@ -21,6 +53,7 @@
       <label for="asy_delete">Modify HTML for sandboxed embedding</label>
     </div>
     <button id="asy_submit" onclick="submitAsy()">Submit</button>
+    <button id="asy_submit" onclick="clearAll()">Clear</button>
     <span id="asy_out"></span>
   </body>
 </html>

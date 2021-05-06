@@ -1,3 +1,77 @@
+function updateClass() {
+  let asy_in = document.getElementById("asy_in");
+  if (asy_in.value != "") {
+    asy_in.classList.add("has-content");
+    document.getElementById("upload").disabled = true;
+  } else {
+    asy_in.classList.remove("has-content");
+    document.getElementById("upload").disabled = false;
+  }
+}
+
+function displayFiles(files) {
+  let zone = document.getElementById("dropzone");
+
+  if (files.length !== 0) {
+    zone.classList.add("has-files");
+    const list = document.createElement("ul");
+    list.style.listStyle = "none";
+    list.style.padding = "0";
+    zone.appendChild(list);
+
+    for (const file of files) {
+      const listItem = document.createElement("li");
+      const para = document.createElement("p");
+      if (file.name.split(".").pop() === "asy") {
+        para.textContent = file.name;
+
+        listItem.appendChild(para);
+      } else {
+        para.textContent = `${file.name}: Not an asy file. Update your selection.`;
+        listItem.appendChild(para);
+      }
+
+      list.appendChild(listItem);
+    }
+  }
+}
+
+function browseHandler() {
+  let input = document.getElementById("upload");
+  displayFiles(input.files);
+}
+
+function dropHandler(e) {
+  let asy_in = document.getElementById("asy_in");
+  e.preventDefault();
+
+  // no drag-and-drop if text has been input
+  if (asy_in.classList.contains("has-content")) {
+    return;
+  }
+
+  displayFiles(e.dataTransfer.files);
+}
+
+function dragoverHandler(e) {
+  e.preventDefault();
+}
+
+function clearAll() {
+  let oldList = document.querySelector("#dropzone>ul");
+  if (oldList !== null) {
+    oldList.remove();
+  }
+
+  let asy_in = document.getElementById("asy_in");
+  let zone = document.getElementById("dropzone");
+  zone.classList.remove("has-files");
+
+  asy_in.value = "";
+  asy_in.classList.remove("has-content");
+  document.getElementById("upload").disabled = false;
+}
+
 async function asyToServer(asy, asy_del, asy_em) {
   let response = await fetch("/host-asy", {
     method: "POST",
