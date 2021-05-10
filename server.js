@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("client"));
 
-app.post("/host-asy", (req, res) => {
+app.post("/host-asy-text", (req, res) => {
   let id = uuid.v4();
   let filename = "files/" + id + ".asy";
   fs.closeSync(fs.openSync("./" + filename, "w"));

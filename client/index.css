@@ -88,7 +88,6 @@ button:focus {
   opacity: 0;
 }
 
-#asy_in:focus + #asy_in_background #upload_label,
 #asy_in.has-content + #asy_in_background #upload_label {
   pointer-events: none;
 }
