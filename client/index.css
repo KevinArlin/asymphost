@@ -67,7 +67,8 @@ button:focus {
 #asy_out {
   display: none;
   width: fit-content;
-
+  background-color: rgb(252, 246, 255);
+  border: thin solid darkslateblue;
   padding: 5px;
 
   margin-right: auto;

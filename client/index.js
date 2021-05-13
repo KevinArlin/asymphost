@@ -1,5 +1,8 @@
 let submission = new FormData();
+let id = uuid.v4();
 let numFiles;
+
+submission.append("id", id);
 
 function updateClass() {
   let asy_in = document.getElementById("asy_in");
@@ -104,6 +107,8 @@ function clearAll() {
   document.getElementById("upload").disabled = false;
 
   submission = new FormData();
+  id = uuid.v4();
+  submission.append("id", id);
 }
 
 async function textToServer(asy, asy_del, asy_em) {
@@ -123,7 +128,19 @@ async function textToServer(asy, asy_del, asy_em) {
   }
 }
 
-async function filesToServer(asy_del, asy_em) {}
+async function filesToServer(sub) {
+  let response = await fetch("/host-asy-files", {
+    method: "POST",
+    body: sub,
+  });
+
+  if (response.ok) {
+    let result = await response.json();
+    return { path: result.path, error: result.error, success: result.success };
+  } else {
+    return { status: response.status };
+  }
+}
 
 async function submitAsy() {
   let asy_in = document.getElementById("asy_in");
@@ -157,11 +174,28 @@ async function submitAsy() {
       let mainFile = document.querySelector("input[name='mainFile']:checked");
       if (mainFile !== null) {
         console.log(mainFile.value);
+        submission.append("main", mainFile.value);
       } else {
         alert("You must select a main document for compilation");
         return;
       }
     }
+    submission.append("asy_del", asy_delete.checked);
+    submission.append("asy_em", asy_embed.checked);
+
+    let response = await filesToServer(submission);
+    if (response.error) {
+      asy_out.style.display = "block";
+      asy_out.style.color = "red";
+      let error_split = response.error.split(".asy:");
+      asy_out.textContent = error_split[1];
+    } else {
+      asy_out.style.display = "block";
+      asy_out.style.color = "darkslateblue";
+      asy_out.textContent = response.path;
+    }
+    console.log(response);
   } else {
+    alert("No content submitted");
   }
 }
