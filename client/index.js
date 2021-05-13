@@ -1,8 +1,6 @@
 let submission = new FormData();
-let id = uuid.v4();
+submission.set("id", 0); // make sure ID field is first in form
 let numFiles;
-
-submission.append("id", id);
 
 function updateClass() {
   let asy_in = document.getElementById("asy_in");
@@ -51,7 +49,7 @@ function displayFiles(files) {
           listItem.appendChild(radio);
         }
         listItem.appendChild(lbl);
-        submission.append(file.name, file);
+        submission.set(file.name, file);
       } else {
         lbl.innerHTML = `${file.name}: Not an asy file. Update your selection.`;
         listItem.appendChild(lbl);
@@ -107,29 +105,11 @@ function clearAll() {
   document.getElementById("upload").disabled = false;
 
   submission = new FormData();
-  id = uuid.v4();
-  submission.append("id", id);
-}
-
-async function textToServer(asy, asy_del, asy_em) {
-  let response = await fetch("/host-asy-text", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ asy, asy_del, asy_em }),
-  });
-
-  if (response.ok) {
-    let result = await response.json();
-    return { path: result.path, error: result.error, success: result.success };
-  } else {
-    return { status: response.status };
-  }
+  submission.set("id", 0);
 }
 
 async function filesToServer(sub) {
-  let response = await fetch("/host-asy-files", {
+  let response = await fetch("/host-asy", {
     method: "POST",
     body: sub,
   });
@@ -143,6 +123,8 @@ async function filesToServer(sub) {
 }
 
 async function submitAsy() {
+  submission.set("id", uuid.v4()); // actually set ID for submission
+
   let asy_in = document.getElementById("asy_in");
   let zone = document.getElementById("dropzone");
 
@@ -152,50 +134,40 @@ async function submitAsy() {
   let asy_out = document.getElementById("asy_out");
 
   if (asy_in.classList.contains("has-content")) {
-    let response = await textToServer(
-      asy_in.value,
-      asy_delete.checked,
-      asy_embed.checked
-    );
-    if (response.error) {
-      asy_out.style.display = "block";
-      asy_out.style.color = "red";
-      let error_split = response.error.split(".asy:");
-      asy_out.textContent = error_split[1];
-    } else {
-      asy_out.style.display = "block";
-      asy_out.style.color = "darkslateblue";
-      asy_out.textContent = response.path;
+    if (submission.get("main.asy")) {
+      submission.delete("main.asy");
     }
-    console.log(response);
+    let asyFile = new File([asy_in.value], "main.asy");
+    submission.set("main.asy", asyFile);
   } else if (zone.classList.contains("has-files")) {
     // check radio buttons, if one isn't selected, show alert
     if (numFiles > 1) {
       let mainFile = document.querySelector("input[name='mainFile']:checked");
       if (mainFile !== null) {
         console.log(mainFile.value);
-        submission.append("main", mainFile.value);
+        submission.set("main", mainFile.value);
       } else {
         alert("You must select a main document for compilation");
         return;
       }
     }
-    submission.append("asy_del", asy_delete.checked);
-    submission.append("asy_em", asy_embed.checked);
-
-    let response = await filesToServer(submission);
-    if (response.error) {
-      asy_out.style.display = "block";
-      asy_out.style.color = "red";
-      let error_split = response.error.split(".asy:");
-      asy_out.textContent = error_split[1];
-    } else {
-      asy_out.style.display = "block";
-      asy_out.style.color = "darkslateblue";
-      asy_out.textContent = response.path;
-    }
-    console.log(response);
   } else {
     alert("No content submitted");
+    return;
   }
+
+  submission.set("asy_del", asy_delete.checked);
+  submission.set("asy_em", asy_embed.checked);
+
+  let response = await filesToServer(submission);
+  if (response.error) {
+    asy_out.style.display = "block";
+    asy_out.style.color = "red";
+    asy_out.textContent = response.error;
+  } else {
+    asy_out.style.display = "block";
+    asy_out.style.color = "darkslateblue";
+    asy_out.textContent = response.path;
+  }
+  console.log(response);
 }
