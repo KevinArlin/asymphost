@@ -1,6 +1,6 @@
 ## Asymphost
 
-Asymphost is a simple tool I threw together for my husband, Kevin, who needs to be able to quickly share compiled Asymptote with others. Simply paste some Asymptote into the text-area or drag-and-drop some files in, hit submit, and receive a URL in return (or error output, if something's gone awry somewhere). This tool only works for files which can be compiled to either HTML or SVG.
+Asymphost is a simple tool Sam threw together for me, who needed to be able to quickly share compiled Asymptote with others. Simply paste some Asymptote into the text-area or drag-and-drop some files in, hit submit, and receive a URL in return (or error output, if something's gone awry somewhere). This tool only works for files which can be compiled to either HTML or SVG.
 
 There are two options available:
 
